@@ -47,8 +47,10 @@ class writer:
                     )
         
         self.cur.execute("CREATE TABLE GlobalMetadata ("
-                         "Version TEXT NOT NULL UNIQUE)")
-        self.cur.execute("INSERT INTO GlobalMetadata (Version) VALUES('1.0')")
+                         "Version TEXT NOT NULL UNIQUE, "
+                         "Idioma1 TEXT NOT NULL UNIQUE, "
+                         "Idioma2 TEXT NOT NULL UNIQUE)")
+        self.cur.execute("INSERT INTO GlobalMetadata (Version,Idioma1,Idioma2) VALUES('1.0','Aleman','Espanol')")
 
         self.con.commit()
 
@@ -79,6 +81,10 @@ class writer:
         self.verbstmt="INSERT INTO Verbos (Verbo,Regular,PS,SS,TS,PP,SP,TP) "\
             "VALUES(?,?,?,?,?,?,?,?)"  
         self.mode=Enum('Mode',["Nombre","Verbo","Resto"])
+
+    def __del__(self):
+        self.cur.close()
+        self.con.close()
 
     # The first element of the tuples must be Espanol 
     # and the second one Aleman

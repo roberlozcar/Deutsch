@@ -1,14 +1,16 @@
 from vocabulary import runvocabulary
-import verbs
+from verbs import runverbs
 
-language=input("¿Qué idioma quieres practicar? (Recuerda que debes tener el diccionario en el formato correcto en la misma carpeta con el nombre dictionary_Idioma.csv)\n")
+database=input("Escribe el nombre de la base de datos con el diccionario y la gramatica "
+               "(Recuerda que debes tener la base de datos en el formato correcto en la misma carpeta)\n")
 
-understood=False
-while not understood:
-    selectscript=input("¿Quieres practicar verbos (verbos) o vocabulario (vocabulario)?\n")
+while True:
+    selectscript=input("¿Quieres practicar verbos (verbos), vocabulario (vocabulario) o nombres (nombres)?\n")
     if selectscript=="vocabulario":
-        runvocabulary(language)
+        runvocabulary(database)
     elif selectscript=="verbos":
-        verbs
+        runverbs(database)
+    elif selectscript=="nombres":
+        runverbs(database)
     else:
         print("Entrada incorrecta, solo se admite \"verbos\" o \"vocabulario\"\nInténtelo de nuevo\n")

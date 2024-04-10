@@ -1,48 +1,64 @@
-import pandas as pd
-from numpy.random import randint,rand
+from reader import reader
+from numpy.random import rand,choice
 
-def runvocabulary(language:str)->None:
-    path="dictionary_"+language+".csv"
-    dictionary=pd.read_csv(path,sep=",")
+def checkPolisemic(answer:str,polisemics:list[tuple[str]])->bool:
+    for p in polisemics:
+        if answer==p[0]:
+            return True
+    return False
 
+def runvocabulary(file:str)->None:
+    r=reader(file)
     nw=int(input("¿Cuántas palabras vas a practicar?\t"))
-    rownumber=randint(0,len(dictionary)+1,nw)
-    rows=dictionary.iloc[rownumber]
-    mode=int(input("¿De español a "+language+" (0), de "+language+" a español (1) o da igual (2)?\t"))
+    rownumbers=choice(r.getSize("Diccionario")+1,nw)
+    corrects=0
+    languages=r.getLanguages()
+    mode=int(input("¿De "+languages[0]+" a "+languages[1]+" (0), de "+languages[1]+" a "+languages[0]+
+                   " (1) o da igual (2)?\t"))
 
     corrects=0
-    if mode==0:
-        for index, row in rows.iterrows():
-            if input(str(row["Español"])+"\n")==row[language]:
+    # Idioma2 (Español) a Idioma1 (Alemán)
+    if mode==1:
+        for n in rownumbers:
+            words=r.readRowid(n)
+            polisemic=r.getPolisemicWords(languages[0],languages[1],words[0])
+            answer=input(words[0]+"\n")
+            if checkPolisemic(answer,polisemic):
                 print("¡Correcto!\n")
                 corrects+=1
-                dictionary.loc[index,"Box"]=dictionary.loc[index,"Box"]+1
             else:
-                print("No es correcto, la palabra es",row[language],"\n")
-    elif mode==1:
-        for index, row in rows.iterrows():
-            if input(str(row[language])+"\n")==row["Español"]:
+                print("No es correcto, la palabra es",words[1],"\n")
+    # Idioma1 (Alemán) a Idioma2 (Español)
+    elif mode==0:
+        for n in rownumbers:
+            words=r.readRowid(n)
+            polisemic=r.getPolisemicWords(languages[1],languages[0],words[1])
+            answer=input(words[1]+"\n")
+            if checkPolisemic(answer,polisemic):
                 print("¡Correcto!\n")
                 corrects+=1
-                dictionary.loc[index,"Box"]=dictionary.loc[index,"Box"]+1
             else:
-                print("No es correcto, la palabra es",row["Español"],"\n")
+                print("No es correcto, la palabra es",words[0],"\n")
+    # Da igual (random)
     else:
-        for index, row in rows.iterrows():
+        for n in rownumbers:
+            words=r.readRowid(n)
             if rand()<0.5:
-                if input(str(row[language])+"\n")==row["Español"]:
+                polisemic=r.getPolisemicWords(languages[1],languages[0],words[1])
+                answer=input(words[1]+"\n")
+                if checkPolisemic(answer,polisemic):
                     print("¡Correcto!\n")
                     corrects+=1
-                    dictionary.loc[index,"Box"]=dictionary.loc[index,"Box"]+1
                 else:
-                    print("No es correcto, la palabra es",row["Español"],"\n")
+                    print("No es correcto, la palabra es",words[0],"\n")
             else:
-                if input(str(row["Español"])+"\n")==row[language]:
+                polisemic=r.getPolisemicWords(languages[0],languages[1],words[0])
+                answer=input(words[0]+"\n")
+                if checkPolisemic(answer,polisemic):
                     print("¡Correcto!\n")
                     corrects+=1
-                    dictionary.loc[index,"Box"]=dictionary.loc[index,"Box"]+1
                 else:
-                    print("No es correcto, la palabra es",row[language],"\n")
+                    print("No es correcto, la palabra es",words[1],"\n")
 
     print("Acertaste",corrects,"de",nw,"palabras\n\n")
     prop=float(corrects)/nw
@@ -52,5 +68,3 @@ def runvocabulary(language:str)->None:
         print("¡Perfecto! Has acertado todas!\n")
     else:
         print("¡Muy bien! Vas progresando correctamente\n")
-
-    dictionary.to_csv(path,",",index=False)
