@@ -7,10 +7,10 @@ def checkPolisemic(answer:str,polisemics:list[tuple[str]])->bool:
             return True
     return False
 
-def runvocabulary(file:str)->None:
+def runvocabulary(file:str)->float:
     r=reader(file)
     nw=int(input("¿Cuántas palabras vas a practicar?\t"))
-    rownumbers=choice(r.getSize("Diccionario")+1,nw)
+    rownumbers=choice(range(1,r.getSize("Diccionario")+1),nw)
     corrects=0
     languages=r.getLanguages()
     mode=int(input("¿De "+languages[0]+" a "+languages[1]+" (0), de "+languages[1]+" a "+languages[0]+
@@ -61,10 +61,5 @@ def runvocabulary(file:str)->None:
                     print("No es correcto, la palabra es",words[1],"\n")
 
     print("Acertaste",corrects,"de",nw,"palabras\n\n")
-    prop=float(corrects)/nw
-    if prop<0.5:
-        print("Necesitas estudiar más\n")
-    elif prop==1:
-        print("¡Perfecto! Has acertado todas!\n")
-    else:
-        print("¡Muy bien! Vas progresando correctamente\n")
+    return float(corrects)/nw
+    

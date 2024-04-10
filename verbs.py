@@ -15,10 +15,10 @@ def regularform(verb:str,person:int)->str:
         return lexem+"t"
     
 
-def runverbs(file:str)->None:
+def runverbs(file:str)->float:
     r=reader(file)
     nw=int(input("¿Cuántos verbos vas a practicar?\t"))
-    rownumbers=choice(r.getSize("Verbos")+1,nw)
+    rownumbers=choice(range(1,r.getSize("Verbos")+1),nw)
     corrects=0
     pronouns=r.getPronouns()
 
@@ -58,10 +58,4 @@ def runverbs(file:str)->None:
             print("\nHas acertado todas las formas verbales de",verb[0],"\n")
 
     print("Acertaste",corrects,"de",nw,"palabras\n\n")
-    prop=float(corrects)/nw
-    if prop<0.5:
-        print("Necesitas estudiar más\n")
-    elif prop==1:
-        print("¡Perfecto! Has acertado todas!\n")
-    else:
-        print("¡Muy bien! Vas progresando correctamente\n")
+    return float(corrects)/nw
